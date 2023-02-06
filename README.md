@@ -1,12 +1,12 @@
 ## Cross-Modal Fine-Tuning: Align then Refine
 
-Original PyTorch implementation of ORCA proposed in the paper "[Cross-Modal Fine-Tuning: Align then Refine](https://arxiv.org/abs/)." 
+Original PyTorch implementation of ORCA proposed in the paper "[Cross-Modal Fine-Tuning: Align then Refine](https://arxiv.org/abs/)". 
 ORCA is developed for effectively solving  ML problems in diverse modalities using large-scale pretrained transformers. 
 It adapts to a target task  via an align-then-refine workflow: given the target input, ORCA first learns an embedding network  that aligns the embedded feature distribution with the pretraining modality. The pretrained model is then fine-tuned  on the embedded data to exploit the  knowledge shared across modalities. 
 
 This repo specifically supports
 - transferring RoBERTa and Swin transformers (Hugging Face implementation) to downstream tasks;
-- minimizing the l2 distance, Maximum Mean Descrepancy (MMD), or optimal transport dataset distance ([OTDD](https://github.com/microsoft/otdd)) for distributional alignment;
+- minimizing the l2 distance, Maximum Mean Descrepancy ([MMD](https://github.com/jindongwang/transferlearning/blob/master/code/distance/mmd_pytorch.py)), or optimal transport dataset distance ([OTDD](https://github.com/microsoft/otdd)) for distributional alignment;
 - replicate experiments on [NAS-Bench-360](https://nb360.ml.cmu.edu), [PDEBench](https://github.com/pdebench/PDEBench), and [OpenML](https://www.openml.org/) tabular tasks.
 
 ## Requirements
