@@ -11,7 +11,7 @@ This repo specifically supports
 
 ## Requirements
 
-The Docker image needed for each task can be found in the configuration files under the `./src/configs` directory. Then, run `./src/start-up.sh` to install the dependencies.
+The Docker image needed for each task can be found in the configuration files under the `./src/configs` directory. Then, run `./src/startup-hook.sh` to install the dependencies.
 
 ## Experiment with NAS-Bench-360, PDEBench, OpenML tabular data, and GDSC/CTRP drug-response datasets
 
