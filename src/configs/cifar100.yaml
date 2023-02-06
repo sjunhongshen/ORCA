@@ -1,0 +1,72 @@
+name: CIFAR100
+environment:
+    image:
+        gpu: docker.io/junhongshen/nb360:nocosmic
+hyperparameters:
+    dataset: CIFAR100
+    embedder_dataset: CIFAR10
+    objective: otdd-exact
+    weight: base
+    maxsamples: 128 
+
+    experiment_id: 0
+    seed: 0
+    epochs: 60
+    embedder_epochs: 60
+    predictor_epochs: 0
+    finetune_method: all
+    drop_out: 0.0
+    
+    batch_size: 32 
+    eval_batch_size: 1000
+    accum: 32
+    clip: -1
+    validation_freq: 1
+
+    optimizer:
+        name: SGD 
+        params:
+            lr: 0.0001 
+            betas: [0.9, 0.98] 
+            weight_decay: 0.001 
+            momentum: 0.9
+
+    
+    scheduler:  
+        name: WarmupLR
+        params:
+            warmup_epochs: 5
+            decay_epochs: 200
+            sched: [20, 40, 60]
+            base: 0.2
+
+    no_warmup_scheduler:  
+        name: StepLR
+        params:
+            warmup_epochs: 10
+            decay_epochs: 200
+            sched: [20, 40, 60]
+            base: 0.2
+
+    num_workers: 4
+    reproducibility: False
+    valid_split: False
+
+min_validation_period:
+    epochs: 1
+bind_mounts:
+    - host_path: /tmp
+      container_path: /data
+    - host_path: /tmp
+      container_path: /root/.cache
+resources:
+  slots_per_trial: 1
+records_per_epoch: 1562
+searcher:
+  name:  single
+  metric: accuracy
+  smaller_is_better: false
+  max_length:
+    epochs: 1
+max_restarts: 0
+entrypoint: python3 main.py
