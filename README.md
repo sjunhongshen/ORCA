@@ -11,11 +11,11 @@ This repo specifically supports
 
 ## Requirements
 
-The Docker image needed for each task can be found in the configuration files under the `./src/configs' directory. Then, run `./src/start-up.sh' to install the dependencies.
+The Docker image needed for each task can be found in the configuration files under the `./src/configs` directory. Then, run `./src/start-up.sh` to install the dependencies.
 
 ## Experiment with NAS-Bench-360, PDEBench, OpenML tabular data, and GDSC/CTRP drug-response datasets
 
-1. Download required datasets and precomputed language features [text_xs.py](https://www.dropbox.com/s/yhlf25n8rzmdrtp/text_xs.npy?dl=0) and [text_ys.py](https://www.dropbox.com/s/16lj1vprg1pzckt/text_ys.npy?dl=0) (if you are using RoBERTa models) to  `./src/datasets'
+1. Download required datasets and precomputed language features [text_xs.py](https://www.dropbox.com/s/yhlf25n8rzmdrtp/text_xs.npy?dl=0) and [text_ys.py](https://www.dropbox.com/s/16lj1vprg1pzckt/text_ys.npy?dl=0) (if you are using RoBERTa models) to  `./src/datasets`
 2. Run the following command:
 ```
 python3 ./src/main.py --config ./src/configs/task.yaml
@@ -30,7 +30,7 @@ Place the corresponding implementation in `./src/embedders.py` and complete the 
 1. Add the data loaders to `./src/data_loaders.py` and complete the `get_data` function in `./src/task_configs.py`.
 2. Add the loss functions and evaluation metrics to `./src/utils.py` and complete the `get_metric` function in `./src/task_configs.py`.
 3. Modify the `get_config` function in `./src/task_configs.py`.
-4. Add the yaml file to  `./src/configs'.
+4. Add the yaml file to  `./src/configs`.
 
 
 ## Citation
