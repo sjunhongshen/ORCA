@@ -7,7 +7,7 @@ hyperparameters:
     embedder_dataset: text
     objective: otdd-exact
     weight: roberta
-    maxsamples: 128
+    maxsamples: 64
     target_seq_len: 512
 
     experiment_id: 0
