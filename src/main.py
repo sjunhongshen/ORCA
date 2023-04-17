@@ -45,6 +45,7 @@ def main(use_determined, args, info=None, context=None):
     model, ep_start, id_best, train_score, train_losses, embedder_stats_saved = load_state(use_determined, args, context, model, None, None, n_train, freq=args.validation_freq, test=True)
     embedder_stats = embedder_stats if embedder_stats_saved is None else embedder_stats_saved
     
+    offset = 0 if ep_start == 0 else 1
     args, model, optimizer, scheduler = get_optimizer_scheduler(args, model, module=None if args.predictor_epochs == 0 or ep_start >= args.predictor_epochs else 'predictor', n_train=n_train)
     train_full = args.predictor_epochs == 0 or ep_start >= args.predictor_epochs
     
@@ -81,7 +82,7 @@ def main(use_determined, args, info=None, context=None):
         train_loss = train_one_epoch(context, args, model, optimizer, scheduler, train_loader, loss, n_train, decoder, transform)
         train_time_ep = default_timer() -  time_start 
 
-        if ep % args.validation_freq == 0 or ep == args.epochs - 1: 
+        if ep % args.validation_freq == 0 or ep == args.epochs + args.predictor_epochs - 1: 
                 
             val_loss, val_score = evaluate(context, args, model, val_loader, loss, metric, n_val, decoder, transform, fsd_epoch=ep if args.dataset == 'FSD' else None)
 
@@ -93,8 +94,11 @@ def main(use_determined, args, info=None, context=None):
 
             if use_determined:
                 id_current = save_state(use_determined, args, context, model, optimizer, scheduler, ep, n_train, train_score, train_losses, embedder_stats)
-                context.train.report_training_metrics(steps_completed=(ep + 1) * n_train, metrics={"train loss": train_loss, "epoch time": train_time_ep})
-                context.train.report_validation_metrics(steps_completed=(ep + 1) * n_train, metrics={"val score": val_score})
+                try:
+                    context.train.report_training_metrics(steps_completed=(ep + 1) * n_train + offset, metrics={"train loss": train_loss, "epoch time": train_time_ep})
+                    context.train.report_validation_metrics(steps_completed=(ep + 1) * n_train + offset, metrics={"val score": val_score})
+                except:
+                    pass
                     
             if compare_metrics(train_score) == val_score:
                 if not use_determined:
@@ -122,8 +126,6 @@ def main(use_determined, args, info=None, context=None):
             print("[test best-validated]", "\ttime elapsed:", "%.4f" % (test_time_end - test_time_start), "\ttest loss:", "%.4f" % test_loss, "\ttest score:", "%.4f" % test_score)
             
             if use_determined:
-                if len(embedder_stats) > 0:
-                    print(embedder_stats[0], embedder_stats[-1])
                 checkpoint_metadata = {"steps_completed": (ep + 1) * n_train, "epochs": ep}
                 with context.checkpoint.store_path(checkpoint_metadata) as (path, uuid):
                     np.save(os.path.join(path, 'test_score.npy'), test_scores)
@@ -165,6 +167,9 @@ def train_one_epoch(context, args, model, optimizer, scheduler, loader, loss, te
         if transform is not None:
             out = transform(out, z)
             y = transform(y, z)
+
+        if args.dataset[:4] == "DRUG":
+            out = out.squeeze(1)
 
         l = loss(out, y)
         l.backward()
@@ -221,6 +226,9 @@ def evaluate(context, args, model, loader, loss, metric, n_eval, decoder=None, t
                 if transform is not None:
                     out = transform(out, z)
                     y = transform(y, z)
+
+                if args.dataset[:4] == "DRUG":
+                    out = out.squeeze(1)
 
                 outs.append(out)
                 ys.append(y)
@@ -380,4 +388,3 @@ if __name__ == '__main__':
         
         with det.core.init() as context:
             main(True, args, info, context)
-
