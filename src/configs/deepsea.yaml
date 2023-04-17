@@ -36,7 +36,7 @@ hyperparameters:
         name: WarmupLR
         params:
             warmup_epochs: 10
-            decay_epochs: 20
+            decay_epochs: 25
             sched: [20, 40, 60]
             base: 0.2
 
